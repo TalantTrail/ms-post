@@ -7,14 +7,15 @@
         <groupId>com.example</groupId>
         <artifactId>ms-post</artifactId>
         <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>post-db</artifactId>
 
     <properties>
         <liquibase.host>localhost</liquibase.host>
-        <liquibase.port>5432</liquibase.port>
-        <liquibase.db>postgres</liquibase.db>
+        <liquibase.port>5433</liquibase.port>
+        <liquibase.db>post</liquibase.db>
         <liquibase.user>user</liquibase.user>
         <liquibase.password>password</liquibase.password>
     </properties>

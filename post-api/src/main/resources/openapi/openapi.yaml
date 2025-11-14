@@ -9,314 +9,126 @@ servers:
     description: Local server
 
 tags:
-  - name: Users
-    description: Операции с пользователями
+  - name: post
+    description: Операции с постами
 
 paths:
-  /api/v1/users:
-    get:
-      tags:
-        - Users
-      summary: Получить список пользователей
-      operationId: getUsers
-      parameters:
-        - name: page
-          in: query
-          schema:
-            type: integer
-            default: 0
-        - name: size
-          in: query
-          schema:
-            type: integer
-            default: 20
-      responses:
-        '200':
-          description: Успешный ответ
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserPageResponse'
-
+  /posts:
     post:
       tags:
-        - Users
-      summary: Создать нового пользователя
-      operationId: createUser
+        - post
+      summary: Создание нового поста
+      description: Создает новый пост с указанным контентом
+      operationId: createPost
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateUserRequest'
+              $ref: '#/components/schemas/CreatePostRequest'
       responses:
         '201':
-          description: Пользователь создан
+          description: Пост успешно создан
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserResponse'
+                $ref: '#/components/schemas/PostResponse'
         '400':
-          description: Невалидные данные
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          description: Некорректные данные запроса
+        '401':
+          description: Пользователь не авторизован
 
-  /api/v1/userfeed/{userId}:
+  /posts/{id}:
     get:
       tags:
-        - Users
-      summary: Получить пользователя по ID
-      operationId: getUserFeedById
+        - post
+      summary: Получение поста по ID
+      description: Возвращает информацию о посте включая данные автора
+      operationId: getPostById
       parameters:
-        - name: userId
+        - name: id
           in: path
+          description: ID поста
           required: true
           schema:
             type: string
             format: uuid
       responses:
         '200':
-          description: Успешный ответ
+          description: Пост успешно получен
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserFeedResponse'
+                $ref: '#/components/schemas/PostResponse'
         '404':
-          description: Пользователь не найден
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
-  /api/v1/users/{userId}:
-    get:
-      tags:
-        - Users
-      summary: Получить пользователя по ID
-      operationId: getUserById
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Успешный ответ
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserResponse'
-        '404':
-          description: Пользователь не найден
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
-    put:
-      tags:
-        - Users
-      summary: Обновить пользователя
-      operationId: updateUser
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateUserRequest'
-      responses:
-        '200':
-          description: Пользователь обновлен
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserResponse'
-
-    delete:
-      tags:
-        - Users
-      summary: Удалить пользователя
-      operationId: deleteUser
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '204':
-          description: Пользователь удален
+          description: Пост не найден
 
 components:
   schemas:
-    CreateUserRequest:
+    CreatePostRequest:
       type: object
       required:
-        - email
-        - nickName
-        - firstName
-        - secondName
-        - birthday
-      properties:
-        email:
-          type: string
-          format: email
-          example: user@example.com
-        nickName:
-          type: string
-          minLength: 3
-          maxLength: 50
-          example: johndoe
-        firstName:
-          type: string
-          maxLength: 100
-          example: John
-        secondName:
-          type: string
-          maxLength: 100
-          example: Doe
-        middleName:
-          type: string
-          maxLength: 100
-          example: Winston
-        aboutSelf:
-          type: string
-          maxLength: 1000
-          example: Java Dev
-        birthday:
-          type: string
-          format: date
-
-
-    UpdateUserRequest:
-      type: object
-      properties:
-        email:
-          type: string
-          format: email
-        username:
-          type: string
-          minLength: 3
-          maxLength: 50
-        firstName:
-          type: string
-          maxLength: 100
-        lastName:
-          type: string
-          maxLength: 100
-        createdAt:
-          type: string
-          format: date
-
-    UserResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: 123e4567-e89b-12d3-a456-426614174000
-        email:
-          type: string
-          format: email
-          example: user@example.com
-        nickName:
-          type: string
-          example: johndoe
-        firstName:
-          type: string
-          example: John
-        secondName:
-          type: string
-          example: Doe
-        middleName:
-          type: string
-          example: Winston
-        birthday:
-          type: string
-          format: date
-        createdAt:
-          type: string
-          format: date
-        updatedAt:
-          type: string
-          format: date
-
-    UserFeedResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: 123e4567-e89b-12d3-a456-426614174000
-        email:
-          type: string
-          format: email
-          example: user@example.com
-        nickName:
-          type: string
-          example: johndoe
-        firstName:
-          type: string
-          example: John
-        secondName:
-          type: string
-          example: Doe
-        middleName:
-          type: string
-          example: Winston
-
-
-    UserPageResponse:
-      type: object
+        - content
       properties:
         content:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserResponse'
-        totalElements:
-          type: integer
-          format: int64
-        totalPages:
-          type: integer
-        size:
-          type: integer
-        number:
-          type: integer
+          type: string
+          maxLength: 1000
+          description: Содержимое поста
+          example: "Это мой первый пост в социальной сети!"
 
-    ErrorResponse:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        timestamp:
-          type: string
-          format: date
-
-    CourseDto:
+    PostResponse:
       type: object
       properties:
         id:
           type: string
           format: uuid
-          example: 123e4567-e89b-12d3-a456-426614174000
-        title:
+          description: Уникальный идентификатор поста
+          example: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        content:
           type: string
-          example: Python c 0
-        description:
+          maxLength: 1000
+          description: Содержимое поста
+          example: "Это мой первый пост в социальной сети!"
+        media:
           type: string
-          example: Курс по Python c 0 до опытного разработчика
-  
+          maxLength: 500
+          nullable: true
+          description: Ссылка на медиа-файл
+          example: "https://example.com/images/photo.jpg"
+        created_at:
+          type: string
+          format: date-time
+          description: Дата и время создания поста
+          example: "2025-11-14T10:30:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: Дата и время последнего обновления поста
+          example: "2025-11-14T10:30:00Z"
+        author_id:
+          type: string
+          format: uuid
+          description: ID автора поста
+          example: "5a2fd653-85b0-447c-aef5-2e68769f29e0"
+        email:
+          type: string
+          format: email
+          description: Email автора
+          example: "anna.smith@example.com"
+        nickName:
+          type: string
+          description: Никнейм автора
+          example: "annasmith"
+        firstName:
+          type: string
+          description: Имя автора
+          example: "Anna"
+        secondName:
+          type: string
+          description: Фамилия автора
+          example: "Smith"
+        middleName:
+          type: string
+          nullable: true
+          description: Отчество автора
+          example: null
